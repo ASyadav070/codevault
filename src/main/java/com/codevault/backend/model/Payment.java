@@ -28,8 +28,8 @@ public class Payment {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "subscription_plan_id", nullable = false)
-    private SubscriptionPlan subscriptionPlan;
+    @JoinColumn(name = "content_id", nullable = false)
+    private Content content;
 
     @Column(nullable = false)
     private BigDecimal amount;

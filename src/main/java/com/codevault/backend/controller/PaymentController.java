@@ -4,13 +4,15 @@ import com.codevault.backend.dto.OrderRequest;
 import com.codevault.backend.dto.OrderResponse;
 import com.codevault.backend.dto.PaymentSuccessResponse;
 import com.codevault.backend.dto.PaymentVerificationRequest;
+import com.codevault.backend.model.Content;
 import com.codevault.backend.model.Payment;
-import com.codevault.backend.model.SubscriptionPlan;
 import com.codevault.backend.model.User;
+import com.codevault.backend.model.UserPurchase;
 import com.codevault.backend.repository.PaymentRepository;
+import com.codevault.backend.repository.UserPurchaseRepository;
 import com.codevault.backend.security.JwtTokenProvider;
 import com.codevault.backend.service.CashfreeService;
-import com.codevault.backend.service.SubscriptionService;
+import com.codevault.backend.service.ContentService;
 import com.codevault.backend.service.UserService;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -31,20 +33,23 @@ public class PaymentController {
     private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
 
     private final CashfreeService cashfreeService;
-    private final SubscriptionService subscriptionService;
+    private final ContentService contentService;
     private final UserService userService;
-    private final PaymentRepository paymentRepository; // Use repository directly for webhook
+    private final PaymentRepository paymentRepository;
+    private final UserPurchaseRepository userPurchaseRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     public PaymentController(CashfreeService cashfreeService,
-                             SubscriptionService subscriptionService,
+                             ContentService contentService,
                              UserService userService,
                              PaymentRepository paymentRepository,
+                             UserPurchaseRepository userPurchaseRepository,
                              JwtTokenProvider jwtTokenProvider) {
         this.cashfreeService = cashfreeService;
-        this.subscriptionService = subscriptionService;
+        this.contentService = contentService;
         this.userService = userService;
         this.paymentRepository = paymentRepository;
+        this.userPurchaseRepository = userPurchaseRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -57,25 +62,24 @@ public class PaymentController {
 
         try {
             User user = userService.getUserByEmail(userDetails.getUsername());
-            SubscriptionPlan plan = subscriptionService.getSubscriptionPlanById(orderRequest.planId());
+            Content content = contentService.getContentById(orderRequest.contentId());
 
             String orderId = UUID.randomUUID().toString();
-            double amount = plan.getPrice().doubleValue();
+            double amount = content.getPrice().doubleValue();
 
             OrderResponse cashfreeOrder = cashfreeService.createOrder(
                     user.getId().toString(),
                     user.getEmail(),
-                    user.getPhoneNumber() != null ? user.getPhoneNumber() : "9999999999", // Use real or placeholder phone
+                    user.getPhoneNumber() != null ? user.getPhoneNumber() : "9999999999",
                     amount,
                     orderId
             );
 
-            // Save pending payment record
             Payment pendingPayment = Payment.builder()
                     .user(user)
-                    .subscriptionPlan(plan)
-                    .amount(plan.getPrice())
-                    .currency(plan.getCurrency())
+                    .content(content)
+                    .amount(content.getPrice())
+                    .currency("INR") // Assuming INR
                     .cfOrderId(orderId)
                     .status(Payment.PaymentStatus.PENDING)
                     .build();
@@ -111,14 +115,16 @@ public class PaymentController {
                 payment.setCfSignature(verificationRequest.cfSignature());
                 paymentRepository.save(payment);
 
-                User user = payment.getUser();
-                user.setSubscriptionStatus(User.SubscriptionStatus.ACTIVE);
-                userService.saveUser(user);
+                UserPurchase userPurchase = UserPurchase.builder()
+                        .user(payment.getUser())
+                        .content(payment.getContent())
+                        .build();
+                userPurchaseRepository.save(userPurchase);
 
-                String newToken = jwtTokenProvider.generateToken(user);
+                String newToken = jwtTokenProvider.generateToken(payment.getUser());
 
                 return new ResponseEntity<>(new PaymentSuccessResponse(
-                        "SUCCESS", "Payment verified and subscription activated.", newToken
+                        "SUCCESS", "Payment verified and content purchased.", newToken
                 ), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Payment verification failed.", HttpStatus.BAD_REQUEST);
@@ -136,10 +142,8 @@ public class PaymentController {
         logger.info("Payload: {}", payload);
         logger.info("Signature: {}", signature);
 
-        // TEMPORARY: Bypassing signature verification for debugging
-        boolean isVerified = true; // cashfreeService.verifyWebhookSignature(payload, signature);
+        boolean isVerified = true;
         logger.warn("!!! TEMPORARY: Webhook signature verification is currently BYPASSED for testing. !!!");
-
 
         if (isVerified) {
             try {
@@ -167,17 +171,17 @@ public class PaymentController {
                         }
 
                         paymentRecord.setStatus(Payment.PaymentStatus.SUCCESS);
-                        // FIX: Read cf_payment_id as Long and convert to String
                         long cfPaymentIdLong = payment.getLong("cf_payment_id");
                         paymentRecord.setCfPaymentId(String.valueOf(cfPaymentIdLong));
                         paymentRepository.save(paymentRecord);
                         logger.info("Payment record updated to SUCCESS for orderId: {}", orderId);
 
-                        User user = paymentRecord.getUser();
-                        user.setSubscriptionStatus(User.SubscriptionStatus.ACTIVE);
-                        user.setRole(User.Role.PREMIUM); // Upgrading user role
-                        userService.saveUser(user);
-                        logger.info("User {} upgraded to PREMIUM.", user.getEmail());
+                        UserPurchase userPurchase = UserPurchase.builder()
+                                .user(paymentRecord.getUser())
+                                .content(paymentRecord.getContent())
+                                .build();
+                        userPurchaseRepository.save(userPurchase);
+                        logger.info("User {} purchased content {}.", paymentRecord.getUser().getEmail(), paymentRecord.getContent().getTitle());
 
                         return new ResponseEntity<>("Webhook processed successfully", HttpStatus.OK);
                     } else {

@@ -35,8 +35,8 @@ public class SubscriptionPlan {
     @Column(nullable = false)
     private String currency; // e.g., "USD"
 
-    @Column(name = "stripe_price_id", nullable = false, unique = true)
-    private String stripePriceId; // Corresponds to Stripe's Price ID
+    @Column(name = "cashfree_plan_id", unique = true, nullable = false)
+    private String cashfreePlanId;
 
     @Column(name = "duration_months")
     private Integer durationMonths; // e.g., 1 for monthly, 12 for yearly

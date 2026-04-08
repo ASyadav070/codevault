@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -38,6 +39,9 @@ public class Content {
     @Column(name = "content_type", nullable = false)
     private String contentType; // e.g., VIDEO, ARTICLE, QUIZ
 
+    @Column(precision = 10, scale = 2)
+    private BigDecimal price;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -48,5 +52,15 @@ public class Content {
 
     public enum AccessLevel {
         FREE, PREMIUM
+    }
+    @Transient // This tells Hibernate NOT to look for this in the Supabase database
+    private boolean accessDenied;
+
+    public boolean isAccessDenied() {
+        return accessDenied;
+    }
+
+    public void setAccessDenied(boolean accessDenied) {
+        this.accessDenied = accessDenied;
     }
 }
