@@ -10,26 +10,35 @@ import Navigation from './components/Common/Navigation';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import './App.css';
 
+import CommonLayout from './components/Layout/CommonLayout';
+
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-slate-900 text-white font-sans">
-        <Navigation />
-        <main className="container mx-auto p-6">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/catalog" element={<Catalog />} />
-              <Route path="/content/:id" element={<ContentDetail />} />
-              <Route path="/checkout/:id" element={<Checkout />} />
-            </Route>
-          </Routes>
-        </main>
-      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        
+        {/* Other routes wrapped in standard layout */}
+        <Route
+          path="/*"
+          element={
+            <CommonLayout>
+              <Routes>
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Register />} />
+                <Route element={<ProtectedRoute />}>
+                  <Route path="catalog" element={<Catalog />} />
+                  <Route path="content/:id" element={<ContentDetail />} />
+                  <Route path="checkout/:id" element={<Checkout />} />
+                </Route>
+              </Routes>
+            </CommonLayout>
+          }
+        />
+      </Routes>
     </Router>
   );
 }
+
 
 export default App;

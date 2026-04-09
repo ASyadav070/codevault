@@ -1,14 +1,17 @@
+import React from 'react';
+import Navbar from '../components/Navbar';
+import Hero from '../components/Hero';
+import LogoCloud from '../components/LogoCloud';
+
 export default function Home() {
   return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-900 font-sans">
-        <div className="bg-slate-800 p-10 rounded-2xl shadow-2xl border border-slate-700 text-center">
-          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-4">
-            CodeVault
-          </h1>
-          <p className="text-lg text-slate-300">
-            Tailwind v4 is officially online.
-          </p>
-        </div>
-      </div>
+    <main className="min-h-screen bg-[#030711] text-slate-200 selection:bg-emerald-500/30">
+      <Navbar />
+      <Hero />
+      <LogoCloud />
+      
+      {/* Optional: Add a subtle overlay for extra depth */}
+      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_50%,rgba(16,185,129,0.02)_0%,transparent_100%)]" />
+    </main>
   );
-}
+}

@@ -30,73 +30,76 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-slate-800 p-10 rounded-xl shadow-lg">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
-            Create a new account
+    <div className="flex items-center justify-center min-h-[70vh] px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 glass-card p-10 rounded-3xl shadow-2xl relative overflow-hidden">
+        {/* Decorative Glow */}
+        <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 blur-[80px] rounded-full" />
+        
+        <div className="relative z-10">
+          <h2 className="text-center text-3xl font-bold text-white tracking-tight">
+            Join the <span className="text-emerald-400">CodeVault</span> elite
           </h2>
+          <p className="mt-2 text-center text-sm text-slate-400">
+            Start your mastery of coding today
+          </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+
+        <form className="mt-8 space-y-6 relative z-10" onSubmit={handleSubmit}>
+          <div className="space-y-4">
             <div>
-              <label htmlFor="full-name" className="sr-only">Full Name</label>
+              <label htmlFor="full-name" className="block text-sm font-medium text-slate-400 mb-1 ml-1">Full Name</label>
               <input
                 id="full-name"
                 name="name"
                 type="text"
-                autoComplete="name"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-600 bg-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-blue-500 focus:z-10 sm:text-sm rounded-t-md"
-                placeholder="Full Name"
+                className="w-full px-4 py-3 bg-slate-900/50 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all sm:text-sm"
+                placeholder="John Doe"
               />
             </div>
             <div>
-              <label htmlFor="email-address" className="sr-only">Email address</label>
+              <label htmlFor="email-address" className="block text-sm font-medium text-slate-400 mb-1 ml-1">Email address</label>
               <input
                 id="email-address"
                 name="email"
                 type="email"
-                autoComplete="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-600 bg-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
+                className="w-full px-4 py-3 bg-slate-900/50 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all sm:text-sm"
+                placeholder="name@company.com"
               />
             </div>
             <div>
-              <label htmlFor="password" className="sr-only">Password</label>
+              <label htmlFor="password" name="password" className="block text-sm font-medium text-slate-400 mb-1 ml-1">Password</label>
               <input
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="new-password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-600 bg-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-blue-500 focus:z-10 sm:text-sm rounded-b-md"
-                placeholder="Password"
+                className="w-full px-4 py-3 bg-slate-900/50 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all sm:text-sm"
+                placeholder="••••••••"
               />
             </div>
           </div>
 
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+          {error && <p className="text-red-400 text-xs text-center font-medium bg-red-400/10 py-2 rounded-lg">{error}</p>}
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-blue-500 transition-colors disabled:opacity-50"
-            >
-              {loading ? 'Registering...' : 'Sign up'}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 px-4 bg-white text-black rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-200 active:scale-[0.98] transition-all shadow-xl shadow-white/5 disabled:opacity-50"
+          >
+            {loading ? 'Creating Account...' : 'Sign Up'}
+          </button>
         </form>
-        <div className="text-sm text-center">
-          <Link to="/login" className="font-medium text-blue-400 hover:text-blue-300">
+
+        <div className="text-sm text-center relative z-10">
+          <Link to="/login" className="font-medium text-emerald-400 hover:text-emerald-300 transition-colors">
             Already have an account? Log in here
           </Link>
         </div>
