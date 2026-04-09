@@ -6,15 +6,11 @@ frontend/
 ├─ src/
 │  ├─ components/
 │  │  ├─ Auth/          # Login.jsx, Register.jsx, ProtectedRoute.jsx
-│  │  ├─ Content/       # ContentList.jsx, ContentDetail.jsx, Paywall.jsx, Quiz.jsx
-│  │  ├─ Subscription/  # PricingPage.jsx, CheckoutForm.jsx, PaymentSuccess.jsx, Dashboard.jsx
-│  │  ├─ Admin/         # AdminDashboard.jsx, ContentUpload.jsx, UserManagement.jsx
 │  │  └─ Common/        # Navigation.jsx, Footer.jsx, Loading.jsx
-│  ├─ pages/            # Home.jsx, Catalog.jsx, Pricing.jsx, Dashboard.jsx
-│  ├─ services/         # api.js, auth.js, content.js, payment.js, stripe.js
-│  ├─ context/          # AuthContext.jsx, SubscriptionContext.jsx
-│  ├─ hooks/            # useAuth.js, useSubscription.js, useStripe.js
-│  ├─ utils/            # constants.js, helpers.js
+│  ├─ pages/            # Home.jsx, Catalog.jsx, ContentDetail.jsx, Checkout.jsx, Login.jsx, Register.jsx
+│  ├─ services/         # api.js
+│  ├─ context/          # AuthContext.jsx
+│  ├─ hooks/            # useAuth.js
 │  ├─ App.jsx
 │  └─ main.jsx
 ├─ public/
@@ -24,15 +20,14 @@ frontend/
 
 backend/
 ├─ src/main/java/com/codevault/
-│  ├─ controller/       # AuthController, ContentController, PaymentController, etc.
-│  ├─ service/          # UserService, ContentService, StripeService, etc.
-│  ├─ repository/       # UserRepository, ContentRepository, PaymentRepository, etc.
-│  ├─ model/            # User, Content, SubscriptionPlan, Payment, etc.
-│  ├─ dto/              # LoginRequest, CreateSubscriptionRequest, PaymentResponse, etc.
+│  ├─ controller/       # AuthController, ContentController, PaymentController
+│  ├─ service/          # UserService, ContentService, CashfreeService
+│  ├─ repository/       # UserRepository, ContentRepository, PaymentRepository, UserPurchaseRepository
+│  ├─ model/            # User, Content, Payment, UserPurchase
+│  ├─ dto/              # LoginRequest, OrderRequest, OrderResponse, ContentPreviewDto
 │  ├─ security/         # JwtTokenProvider, JwtAuthenticationFilter, SecurityConfig
-│  ├─ exception/        # UnauthorizedException, GlobalExceptionHandler, etc.
 │  └─ Application.java
 ├─ src/main/resources/
 │  ├─ application.properties
-│  └─ application-prod.properties
 └─ pom.xml
+```
