@@ -1,6 +1,6 @@
-# CodeVault - Advanced Tech & Interview Prep Hub
+# CodeVault - Subscription-Based Content Platform
 
-CodeVault is a modern web application designed to help users master technical interviews through a curated collection of free and premium content. This platform features a robust Spring Boot backend, a sleek React frontend, and integrates CashFree for secure per-course payment processing.
+CodeVault is a modern Subscription based content platform designed to help users master technical interviews through a curated collection of free and premium content. This platform features a robust Spring Boot backend, a sleek React frontend, and integrates CashFree for secure per-course payment processing.
 
 ## 🚀 Features
 
@@ -145,14 +145,4 @@ The application follows a client-server architecture:
 11. The full content of the course should now be visible, and the paywall should be gone.
 12. Navigate back to the **Catalog**. The purchased course should now display "Purchased" and a "Continue Learning" button instead of the price and "Explore".
 
-## 🤝 Contributing
 
-Feel free to fork the repository, make improvements, and submit pull requests.
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
----
-
-Last Updated: April 2024
